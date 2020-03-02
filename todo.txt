@@ -1,0 +1,2 @@
+- [] Universe::addObject() - add protection agains adding two objects in the same place
+- [] Object::setPosition - use enums for coordinate indexes
