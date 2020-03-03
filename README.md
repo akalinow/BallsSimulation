@@ -11,7 +11,13 @@ make install -j 4
 ./mySimulation
 ```
 
-Alrernative version with command line compilation:
+Alternative version with command line compilation:
+```
+cd BallsSimulation
+mkdir build; cd build
+
+```
+
 
 Program creates a set of frames merged at the end into a gif animation "animation.gif".
 The animation can be displayed in browser, just type URL (replace "directory" with correct path
