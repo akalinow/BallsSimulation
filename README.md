@@ -17,7 +17,7 @@ mkdir build; cd build
 g++ -Wall -O3 -std=c++14 -DWITHOUT_NUMPY -I/usr/include/python2.7/ -lpython2.7 -I../include/ ../src/*.cpp ../bin/main.cpp -o mySimulation
 ```
 
-##Running intructions:
+## Running intructions:
 Application recognises a number of command line options:
 - -nStep - integer number of time steps to simulate
 - -nBalls - integer number of balls to simulate
@@ -27,7 +27,7 @@ Application recognises a number of command line options:
 Run command:
 
 ```
-./mySimulation -nSteps 250 -nBalls 2 -input random -dt -0.0
+./mySimulation -nSteps 250 -nBalls 2 -input random -dt -0.01
 ```
 
 Program creates a set of frames merged at the end into a gif animation "animation.gif".
