@@ -15,7 +15,8 @@ Alternative version with command line compilation:
 ```
 cd BallsSimulation
 mkdir build; cd build
-
+g++ -Wall -O3 -std=c++14 -DWITHOUT_NUMPY -I/usr/include/python2.7/ -lpython2.7 -I../include/ ../src/*.cpp ../bin/main.cpp -o mySimulation
+./mySimulation
 ```
 
 
