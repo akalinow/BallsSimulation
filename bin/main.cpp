@@ -14,16 +14,20 @@ int  main(int argc, char *argv[]){
   aObj.setRadius(0.01);
   aObj.setPosition(0.0, 0.0, 0.0);
   aObj.setSpeed(1.0, 0.5, 0.0);
-
   myUniverse.addObject(aObj);
+
+  aObj.setPosition(0.0, 0.0, 0.0);
+  aObj.setSpeed(-0.2, 0.6, 0.0);
+  myUniverse.addObject(aObj);
+  
   myUniverse.setTimeStep(0.1);
 
-  std::cout<<"Time step \t   Position: \t\tSpeed:"<<std::endl;
+  std::cout<<"Time step \t Position:\tSpeed:"<<std::endl;
   for(unsigned int iStep=0;iStep<200;++iStep){
     myUniverse.advanceTime();
     myPlotter.plotBalls2D(myUniverse.getObjects(), iStep);
     if(iStep%10==0){
-      std::cout<<std::setw(4)<<iStep<<" ";
+      std::cout<<iStep<<std::endl;
     myUniverse.printState();
     }
   }

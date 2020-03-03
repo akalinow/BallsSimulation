@@ -34,7 +34,7 @@ ostream& operator<<(ostream& os, const Vector3D& aVec){
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ostream& operator<<(ostream& os, const Object& aObj){
-  os <<std::setw(15)<<aObj.getPosition() <<", \t"<<aObj.getSpeed();
+  os <<std::setw(10)<<aObj.getPosition()<<",\t"<<aObj.getSpeed();
   return os;
 }
 ///////////////////////////////////////////////
