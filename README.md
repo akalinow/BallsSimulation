@@ -21,7 +21,7 @@ g++ -Wall -O3 -std=c++14 -DWITHOUT_NUMPY -I/usr/include/python2.7/ -lpython2.7 -
 
 
 Program creates a set of frames merged at the end into a gif animation "animation.gif".
-The animation can be displayed in browser, just type URL (replace "directory" with correct path
+The animation can be displayed in browser, just type URL (replace "directory" with correct path)
 to the file.
 
 ```
