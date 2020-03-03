@@ -1,27 +1,33 @@
 #include <iostream>
+#include <iomanip>
 
 #include "Universe.h"
+#include "Plotter.h"
 
 int  main(int argc, char *argv[]){
 
   Universe myUniverse;
-
+  Plotter myPlotter;
+  
   Object aObj;
   aObj.setMass(1.0);
   aObj.setRadius(0.01);
   aObj.setPosition(0.0, 0.0, 0.0);
-  aObj.setSpeed(1.0, 0.0, 0.0);
+  aObj.setSpeed(1.0, 0.5, 0.0);
 
   myUniverse.addObject(aObj);
   myUniverse.setTimeStep(0.1);
 
-  std::cout<<"\t      Position: \t \t Speed:"<<std::endl;
-  for(unsigned int iStep=0;iStep<50;++iStep){
-    std::cout<<"Time step: "<<iStep<<" ";
+  std::cout<<"Time step \t   Position: \t\tSpeed:"<<std::endl;
+  for(unsigned int iStep=0;iStep<200;++iStep){
     myUniverse.advanceTime();
+    myPlotter.plotBalls2D(myUniverse.getObjects(), iStep);
+    if(iStep%10==0){
+      std::cout<<std::setw(4)<<iStep<<" ";
     myUniverse.printState();
+    }
   }
 
-  return 0;
-  
+  myPlotter.makeAnimation();
+  return 0;  
 }

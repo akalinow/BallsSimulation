@@ -8,9 +8,10 @@
 
 class Universe{
 
-  typedef std::vector<Object> objectContainer;
+ public:
 
- public: 
+  typedef std::vector<Object> objectContainer;
+  
   Universe() = default;
 
   bool addObject(const Object & aObj);

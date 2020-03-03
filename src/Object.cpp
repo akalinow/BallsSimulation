@@ -1,5 +1,6 @@
-#include "Object.h"
+#include <iomanip>
 
+#include "Object.h"
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 void Object::setRadius(double r) { myRadius = r;}
@@ -33,7 +34,7 @@ ostream& operator<<(ostream& os, const Vector3D& aVec){
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ostream& operator<<(ostream& os, const Object& aObj){
-  os << aObj.getPosition() <<", \t\t"<< aObj.getSpeed();
+  os <<std::setw(15)<<aObj.getPosition() <<", \t"<<aObj.getSpeed();
   return os;
 }
 ///////////////////////////////////////////////
