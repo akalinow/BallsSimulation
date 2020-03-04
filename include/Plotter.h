@@ -12,9 +12,18 @@ class Plotter{
 
   void plotBalls2D(const Universe::objectContainer & aContainer, unsigned int timeStep) const;
 
+  void accumulate(const Universe::objectContainer & objects, unsigned int timeStep);
+
   void makeAnimation() const;
 
+  void plotAccumulated() const;
+
  private:
+
+  double getTemperature(double energy) const;
+
+  std::vector<double> meanEnergy, meanVelocity, meanVelocity2; 
+  const double boltzmann_k = 1.0;
   
 };
 

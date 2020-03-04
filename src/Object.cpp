@@ -1,6 +1,18 @@
 #include <iomanip>
 
+
 #include "Object.h"
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+Object::Object(){
+
+  setMass(1000.0);
+  setRadius(0.025);
+  setHasCollided(false);    
+  setPosition(0.0, 0.0, 0.0);
+  setSpeed(0.0, 0.0, 0.0);
+  
+}
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 void Object::setRadius(double r) { myRadius = r;}

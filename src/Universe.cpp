@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "Universe.h"
 
@@ -16,7 +17,8 @@ bool Universe::addObject(const Object & aObj){
 void Universe::advanceTime(){
 
   moveObjects();
-  detectCollisionsWithWalls();
+  detectCollisions();
+  resetCollideFlag();
 }
 /////////////////////////////
 /////////////////////////////
@@ -60,6 +62,23 @@ void Universe::detectCollisionsWithWalls(){
 }
 /////////////////////////////
 /////////////////////////////
+void Universe::detectCollisionsWithBalls(){
+
+  for(auto ball1 = myObjects.begin(); ball1!=myObjects.end();++ball1){
+    const Vector3D & position1 = ball1->getPosition();
+    double radius1 = ball1->getRadius();
+    for(auto ball2 = ball1+1; ball2!=myObjects.end();++ball2){
+      if(ball2->getHasCollided()) continue;
+      const Vector3D & position2 = ball2->getPosition();
+      double radius2 = ball2->getRadius();
+      double radiusSum2 = std::pow(radius1 + radius2,2);
+      double deltaR2 = (position1 - position2).mag2();
+      if(deltaR2<radiusSum2) bounceFromBall(*ball1, *ball2);      
+    }
+  }
+}
+/////////////////////////////
+/////////////////////////////
 void Universe::bounceFromWall(Object & aObj, unsigned int iCoordinate){
 
   Vector3D speed = aObj.getSpeed();
@@ -68,9 +87,26 @@ void Universe::bounceFromWall(Object & aObj, unsigned int iCoordinate){
 }
 /////////////////////////////
 /////////////////////////////
+void Universe::bounceFromBall(Object & aObj1, Object & aObj2){
+
+  double reducedMass = aObj1.getMass()*aObj2.getMass()/(aObj1.getMass() + aObj2.getMass());
+  Vector3D impactVector = aObj1.getPosition() -aObj2.getPosition();
+  double impactParameter2 = impactVector.mag2();
+  Vector3D q = impactVector*((aObj1.getSpeed() - aObj2.getSpeed())*impactVector);
+  q = q/impactParameter2;
+  q = q*(-2.0)*reducedMass;
+
+  aObj1.setHasCollided(true);
+  aObj1.setSpeed(aObj1.getSpeed() + q/aObj1.getMass());
+
+  aObj2.setHasCollided(true);
+  aObj2.setSpeed(aObj2.getSpeed() - q/aObj2.getMass());
+}
+/////////////////////////////
+/////////////////////////////
 void Universe::detectCollisions(){
 
-  //detectCollisionsWithBalls();
+  detectCollisionsWithBalls();
   detectCollisionsWithWalls();
 
 }
@@ -80,6 +116,14 @@ void Universe::printState() const{
 
    for(auto it: myObjects){
      std::cout<<it<<std::endl;
+   }  
+}
+/////////////////////////////
+/////////////////////////////
+void Universe::resetCollideFlag(){
+
+   for(auto & it: myObjects){
+     it.setHasCollided(false);
    }  
 }
 /////////////////////////////

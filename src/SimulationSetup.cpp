@@ -8,7 +8,10 @@
 ///////////////////////////////////////////////
 std::map<std::string, std::string> parseCmdLineArguments(int argc, char *argv[]){
 
-  std::map<std::string, std::string> parsedArgs = { { "-nSteps","100"}, {"-dt", "0.1"}, {"-nBalls","2"}, { "-input","random"} };
+  std::map<std::string, std::string> parsedArgs = { { "-nSteps","100"}, {"-dt", "0.1"},
+						    {"-nBalls","2"}, { "-input","random"},
+						    {"-doFrames","true"}
+  };
 
   for(int iArg=1;iArg<argc;++iArg){
     for(auto & it: parsedArgs){
@@ -34,9 +37,29 @@ Object drawBall(){
 
   Object aObj;
   aObj.setMass(1.0);
-  aObj.setRadius(0.01);
+  aObj.setRadius(0.025);
+  aObj.setHasCollided(false);    
   aObj.setPosition(distribution(generator), distribution(generator), distribution(generator));
   aObj.setSpeed(distribution(generator), distribution(generator), distribution(generator));
+  return aObj;
+}
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+Object putBall(unsigned int iBall){
+
+  Object aObj;
+  aObj.setRadius(0.025);
+  aObj.setHasCollided(false);    
+  if(iBall==0){
+    aObj.setMass(1.0);
+    aObj.setPosition(0.0, 0.0, 0.0);
+    aObj.setSpeed(1.0, 0.0, 0.0);
+  }
+  if(iBall==1){
+    aObj.setMass(2.0);
+    aObj.setPosition(0.5, 0.0, 0.0);
+    aObj.setSpeed(0.0, 0.0, 0.0);
+  }
   return aObj;
 }
 ///////////////////////////////////////////////

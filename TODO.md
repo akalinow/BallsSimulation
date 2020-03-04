@@ -4,3 +4,4 @@
                           e.g. divU = d/dx U
 - [] Universe::detectCollisionsWithWalls() - if ball moves outside the box, move it back inside. Now only momentum reflection is implemented
 - [] Vector3D - addprotection agains accessing elementes outside vector range
+- []  Universe::detectCollisionsWithBalls() - cover multiple balls collisions at the same time

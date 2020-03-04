@@ -34,7 +34,10 @@ class Universe{
   void moveObjects();
   void detectCollisions();
   void detectCollisionsWithWalls();
+  void detectCollisionsWithBalls();
+  void resetCollideFlag();
   void bounceFromWall(Object & aObj, unsigned int iCoordinate);
+  void bounceFromBall(Object & aObj1, Object & aObj2);
 
   double myTimeStep = 0;
   long int myClock = 0;
