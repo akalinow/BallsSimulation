@@ -9,6 +9,13 @@
 namespace plt = matplotlibcpp;
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
+Plotter::Plotter(){
+  
+  plt::backend("Agg");
+ 
+}
+///////////////////////////////////////////////
+///////////////////////////////////////////////
 void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned int timeStep) const{
 
   //radiusToPixel depends on image size in pixels. Adjusted for figure.figsize   : 6.4, 6.4   ## figure size in inches
@@ -17,10 +24,7 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
   double yLimHist = 1.0;
   int frameNumberWidth = 4;
 
-  plt::xlim(-xLimHist,  xLimHist);
-  plt::ylim(-yLimHist, yLimHist);
-  plt::xlabel("x");
-  plt::ylabel("y");
+  std::string title = "nBalls: "+std::to_string(objects.size()) + " time step: "+std::to_string(timeStep); 
   //plt::xkcd();
   
   double radius = objects.front().getRadius()*radiusToPixel;
@@ -33,11 +37,15 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
     x.clear();
     y.clear();
   }
-  plt::show(false);
 
+  plt::title(title);
+  plt::xlim(-xLimHist,  xLimHist);
+  plt::ylim(-yLimHist, yLimHist);
+  plt::xlabel("x");
+  plt::ylabel("y");
   std::ostringstream ostr;
   ostr<< "frame_"<< std::setfill('0') << std::setw(frameNumberWidth) <<timeStep<<".png";
-  plt::savefig(ostr.str());
+  plt::save(plotsDirectory+ostr.str());
   plt::close();
 }
 ///////////////////////////////////////////////
@@ -45,25 +53,29 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
 void Plotter::makeAnimation() const{
 
   std::cout<<"Plotter: making animation"<<std::endl;
-  std::string command = "convert -delay 0.01 -loop 0 frame_*.png animation.gif";
+  std::string command = "convert -delay 0.01 -loop 0 "+plotsDirectory+"frame_*.png "+ plotsDirectory+"animation.gif";
   system(command.c_str());
-  std::cout<<"Done."<<std::endl;
-  
+  std::cout<<"Done."<<std::endl;  
 }
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 void Plotter::accumulate(const Universe::objectContainer & objects, unsigned int timeStep){
 
   double energy = 0.0, velocity=0.0, velocity2=0.0;
+
+  Vector3D momentum;
+  
   for(auto it: objects){
     const Vector3D &speed = it.getSpeed();
     double mass = it.getMass();
     energy += 0.5*mass*speed.mag2();
+    momentum = momentum + speed*mass;
     velocity += speed.mag();
     velocity2 += speed.mag2();    
   }
 
   meanEnergy.push_back(energy/objects.size());
+  meanMomentum.push_back(momentum.mag()/objects.size());
   meanVelocity.push_back(velocity/objects.size());
   meanVelocity2.push_back(velocity2/objects.size());
 }
@@ -72,9 +84,6 @@ void Plotter::accumulate(const Universe::objectContainer & objects, unsigned int
 void Plotter::plotAccumulated() const{
 
   int nTimeSteps = meanEnergy.size();
-  plt::xlim(0.0, (double)nTimeSteps);
-  plt::xlabel("time step");
-  plt::ylabel("value");
 
   std::vector<double> time;
   std::vector<double> meanV_maxwell;
@@ -87,33 +96,32 @@ void Plotter::plotAccumulated() const{
     tmp = sqrt(8.0*boltzmann_k*temperature/M_PI/mass);
     meanV_maxwell.push_back(tmp);			  
   }
-
   std::map<std::string, std::string> keywords;
   keywords["label"] = "<E>";
   plt::plot(time, meanEnergy, keywords);
 
+  keywords["label"] = "<p>";
+  plt::plot(time, meanMomentum, keywords);
+
   keywords["label"] = "<v>";
   plt::plot(time, meanVelocity, keywords);
 
-  keywords["label"] = "<v> from Maxwell-Boltzmann";
+  keywords["label"] = "<v> from Maxwell-Boltzmann for T = 2<E>/(3k)";
   plt::plot(time,  meanV_maxwell, keywords);
-
-  
-  //plt::plot(time, meanVelocity2, "");
+  plt::xlim(0.0, (double)nTimeSteps);
+  plt::xlabel("time step");
+  plt::ylabel("value [arbitrary units]");
   plt::legend();
-  plt::show(true);
 
   std::ostringstream ostr;
   ostr<< "accumulated.png";
-  plt::savefig(ostr.str());
+  plt::save(plotsDirectory+ostr.str());
   plt::close();
 }
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 double Plotter::getTemperature(double energy) const{
-
-  return energy*2.0/3.0/boltzmann_k;
-  
+  return energy*2.0/3.0/boltzmann_k;  
 }
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////

@@ -1,7 +1,9 @@
 #ifndef UNIVERSE__H
 #define UNIVERSE__H
 
+#include <ostream>
 #include <map>
+#include <random>
 
 #include "Object.h"
 
@@ -26,8 +28,6 @@ class Universe{
 
   const objectContainer & getObjects() const {return myObjects;}
 
-  void printState() const;
-
  private:
 
   Vector3D getForce(double mass, Vector3D position) const;
@@ -36,12 +36,17 @@ class Universe{
   void detectCollisionsWithWalls();
   void detectCollisionsWithBalls();
   void resetCollideFlag();
+  Object drawBallInWall(double t, unsigned int iCoordinate);
   void bounceFromWall(Object & aObj, unsigned int iCoordinate);
   void bounceFromBall(Object & aObj1, Object & aObj2);
 
   double myTimeStep = 0;
   long int myClock = 0;
   objectContainer myObjects;
+
+  std::default_random_engine generator;
   
 };
+
+std::ostream& operator<<(std::ostream& os, const Universe& aUniverse);
 #endif

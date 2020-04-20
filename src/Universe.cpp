@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <random>
 
 #include "Universe.h"
 
@@ -55,7 +56,12 @@ void Universe::detectCollisionsWithWalls(){
      for(int iDirection=-1;iDirection<=1;iDirection+=2){
        for(unsigned int iCoordinate=0;iCoordinate<3;++iCoordinate){
 	 bool hitTheWall = (position.at(iCoordinate)*iDirection + radius>1);
-	 if(hitTheWall) bounceFromWall(it, iCoordinate);
+	 if(hitTheWall){
+	   Vector3D position = it.getPosition();
+	   position.at(iCoordinate)=iDirection*(1-radius);
+	   it.setPosition(position);
+	   bounceFromWall(it, iCoordinate);
+	 }
        }
      }
    }
@@ -79,11 +85,48 @@ void Universe::detectCollisionsWithBalls(){
 }
 /////////////////////////////
 /////////////////////////////
+Object Universe::drawBallInWall(double temp, unsigned int iCoordinate){
+
+  std::uniform_real_distribution<double> flatDistribution(0.0,1.0);
+
+  double m = 1.0;
+  double A = 1.0;
+  double omega = 1.0;
+  double E = 0.0;
+  if(temp>0.0){
+    std::exponential_distribution<double> expoDistribution(1.0/temp);
+    E = expoDistribution(generator);
+  }
+  A = sqrt(2.0*E/m)/omega;
+  double time = flatDistribution(generator)*2.0*M_PI;
+  double v = A*omega*cos(omega*time);
+  double vx = 0.0, vy = 0.0, vz = 0.0;
+  if(iCoordinate==0) vx = v;
+  else if (iCoordinate==1) vy = v;
+  else if (iCoordinate==2) vz = v;
+
+  Object aObj;
+  aObj.setMass(m);
+  aObj.setRadius(0.025);
+  aObj.setPosition(0,0,0);
+  aObj.setSpeed(vx, vy, vz);
+  return aObj;
+}
+/////////////////////////////
+/////////////////////////////
 void Universe::bounceFromWall(Object & aObj, unsigned int iCoordinate){
 
+  /*
+  double temp = 10.0;
+  temp = 0.0;
+  Object aObjInWall = drawBallInWall(temp, iCoordinate);
+  bounceFromBall(aObj, aObjInWall);
+  */
+  
   Vector3D speed = aObj.getSpeed();
   speed.at(iCoordinate)*=-1;
   aObj.setSpeed(speed);
+  
 }
 /////////////////////////////
 /////////////////////////////
@@ -112,19 +155,20 @@ void Universe::detectCollisions(){
 }
 /////////////////////////////
 /////////////////////////////
-void Universe::printState() const{
-
-   for(auto it: myObjects){
-     std::cout<<it<<std::endl;
-   }  
-}
-/////////////////////////////
-/////////////////////////////
 void Universe::resetCollideFlag(){
 
    for(auto & it: myObjects){
      it.setHasCollided(false);
    }  
+}
+/////////////////////////////
+/////////////////////////////
+std::ostream& operator<<(std::ostream& os, const Universe& aUniverse){
+
+  for(auto it: aUniverse.getObjects()){
+     os<<it<<std::endl;
+   }
+  return os;
 }
 /////////////////////////////
 /////////////////////////////
