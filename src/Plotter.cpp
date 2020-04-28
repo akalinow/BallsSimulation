@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -22,6 +23,7 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
   double radiusToPixel = 141;
   double xLimHist = 1.0;
   double yLimHist = 1.0;
+  double maxY = 0.2*objects.size();
   int frameNumberWidth = 4;
 
   std::string title = "nBalls: "+std::to_string(objects.size()) + " time step: "+std::to_string(timeStep);
@@ -32,6 +34,7 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
   double circleArea = 2.0*M_PI*std::pow(radius, 2);
   std::vector<double> x, y;
   std::vector<double> energy, px, py, pz;
+  std::vector<double> speedV;
   for(auto it: objects){
     x.push_back(it.getPosition().x());
     y.push_back(it.getPosition().y());
@@ -41,6 +44,7 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
     const Vector3D &speed = it.getSpeed();
     double mass = it.getMass();
     energy.push_back(0.5*mass*speed.mag2());
+    speedV.push_back(speed.mag());
     px.push_back(mass*speed.x());
     py.push_back(mass*speed.y());
     pz.push_back(mass*speed.z());    		     
@@ -56,30 +60,75 @@ void Plotter::plotBalls2D(const Universe::objectContainer & objects, unsigned in
   plt::save(plotsDirectory+ostr.str());
   plt::close();
 
+  int nBins = 20;
+  std::vector<double> energyProb(nBins);
+  std::vector<double> energyValues(nBins);
+  double temperature = 2*0.5/3.0;//FIXME
+  double e = 0.0;
+  double de = *std::max_element(energy.begin(), energy.end())/nBins;
+  double norm = objects.size()/(boltzmann_k*temperature);
+  for(unsigned int iBin=0;iBin<energyProb.size();++iBin){
+    e = (iBin+0.5)*de;
+    energyProb.at(iBin) = norm*exp(-e/(boltzmann_k*temperature))*de;
+    energyValues.at(iBin) = e;
+  }
+
+  double m = 1.0;
+  norm = 4.0*M_PI*pow(m/(2.0*M_PI*boltzmann_k*temperature),3/2.0);
+  norm *=objects.size();
+  double dv = *std::max_element(speedV.begin(), speedV.end())/nBins;
+  double v = 0.0;
+  double e_kin = 0.0;
+  std::vector<double> speedProb(nBins);
+  std::vector<double> speedValues(nBins);
+  double sum = 0.0;
+  for(unsigned int iBin=0;iBin<speedProb.size();++iBin){
+    v = (iBin+0.5)*dv;
+    e_kin = m*pow(v,2)/2.0;
+    speedProb.at(iBin) = norm*pow(v,2)*exp(-e_kin/(boltzmann_k*temperature))*dv;
+    sum += speedProb.at(iBin);
+    speedValues.at(iBin) = v;
+  }
+  
   plt::figure(2);
   plt::subplot(2, 2, 1);
   plt::title(title);
-  plt::hist(energy,20,"sienna");
-  plt::xlabel("Energy");
+  plt::hist(speedV,nBins,"mediumpurple");
+  std::map<std::string, std::string> keywords;
+  keywords["label"] = "$N(v) = N_{0} \\cdot Maxwell(v)dv$";
+  plt::plot(speedValues, speedProb, keywords);
+  plt::xlim(0, 3);
+  plt::ylim(0.0, maxY);
+  plt::xlabel("Speed");
   plt::ylabel("Particle count");
+  plt::legend();
 
   plt::subplot(2, 2, 2);
-  plt::title("");
-  plt::hist(px,21,"seagreen");
-  plt::xlabel("Momentum X componment");
+  plt::hist(energy,nBins,"sienna");
+  keywords["label"] = "$N(E) = \\frac{N_{0}}{k_{B}T}e^{-E/k_{B}T}dE$";
+  plt::plot(energyValues, energyProb, keywords);
+  plt::xlim(0, 3);
+  plt::ylim(0.0, 1.5*maxY);
+  plt::xlabel("Energy");
   plt::ylabel("Particle count");
-
+  plt::legend();
+  
   plt::subplot(2, 2, 3);
   plt::title("");
-  plt::hist(py,21,"seagreen");
-  plt::xlabel("Momentum Y componment");
+  plt::hist(px,21,"mediumseagreen");
+  plt::xlim(-2, 2);
+  plt::ylim(0.0, maxY);
+  plt::xlabel("Momentum X componment");
   plt::ylabel("Particle count");
 
   plt::subplot(2, 2, 4);
   plt::title("");
-  plt::hist(pz,21,"seagreen");
-  plt::xlabel("Momentum Z componment");
+  plt::hist(py,21,"mediumseagreen");
+  plt::xlim(-2, 2);
+  plt::ylim(0.0, maxY);
+  plt::xlabel("Momentum Y componment");
   plt::ylabel("Particle count");
+
   ostr.str("");
   ostr.clear();
   ostr<< "frame_energy_momentum_"<< std::setfill('0') << std::setw(frameNumberWidth) <<timeStep<<".png";

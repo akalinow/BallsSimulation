@@ -36,7 +36,7 @@ class Universe{
   void detectCollisionsWithWalls();
   void detectCollisionsWithBalls();
   void resetCollideFlag();
-  Object drawBallInWall(double t, unsigned int iCoordinate);
+  Object drawBallInWall(double t, Object & aObj, unsigned int iCoordinate);
   void bounceFromWall(Object & aObj, unsigned int iCoordinate);
   void bounceFromBall(Object & aObj1, Object & aObj2);
 

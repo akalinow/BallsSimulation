@@ -85,7 +85,9 @@ void Universe::detectCollisionsWithBalls(){
 }
 /////////////////////////////
 /////////////////////////////
-Object Universe::drawBallInWall(double temp, unsigned int iCoordinate){
+Object Universe::drawBallInWall(double temp,
+				Object & aObj,
+				unsigned int iCoordinate){
 
   std::uniform_real_distribution<double> flatDistribution(0.0,1.0);
 
@@ -98,28 +100,40 @@ Object Universe::drawBallInWall(double temp, unsigned int iCoordinate){
     E = expoDistribution(generator);
   }
   A = sqrt(2.0*E/m)/omega;
-  double time = flatDistribution(generator)*2.0*M_PI;
-  double v = A*omega*cos(omega*time);
+  //double time = flatDistribution(generator)*2.0*M_PI;
+  //double v = A*omega*cos(omega*time);
+  double v = A*omega;
   double vx = 0.0, vy = 0.0, vz = 0.0;
-  if(iCoordinate==0) vx = v;
-  else if (iCoordinate==1) vy = v;
-  else if (iCoordinate==2) vz = v;
+  double dx = 0.0, dy = 0.0, dz = 0.0;
+  double r = aObj.getRadius();
 
-  Object aObj;
-  aObj.setMass(m);
-  aObj.setRadius(0.025);
-  aObj.setPosition(0,0,0);
-  aObj.setSpeed(vx, vy, vz);
-  return aObj;
+  if(iCoordinate==0) {
+    vx = v;
+    dx = 2*r;
+  }
+  else if (iCoordinate==1){
+    vy = v;
+    dy = 2*r;
+  }
+  else if (iCoordinate==2){
+    vz = v;
+    dz = 2*r;
+  }
+
+  Object aWallObj;
+  aWallObj.setMass(m);
+  aWallObj.setRadius(r);
+  aWallObj.setPosition(aObj.getPosition().x()+dx, aObj.getPosition().y()+dy, aObj.getPosition().z()+dz);
+  aWallObj.setSpeed(vx, vy, vz);
+  return aWallObj;
 }
 /////////////////////////////
 /////////////////////////////
 void Universe::bounceFromWall(Object & aObj, unsigned int iCoordinate){
-
   /*
-  double temp = 10.0;
-  temp = 0.0;
-  Object aObjInWall = drawBallInWall(temp, iCoordinate);
+  double temp = 0.5*2/3.0;
+  //temp = 0.0;
+  Object aObjInWall = drawBallInWall(temp, aObj, iCoordinate);
   bounceFromBall(aObj, aObjInWall);
   */
   
