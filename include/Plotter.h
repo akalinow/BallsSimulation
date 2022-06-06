@@ -22,7 +22,8 @@ class Plotter{
 
   double getTemperature(double energy) const;
 
-  std::vector<double> meanEnergy, meanVelocity, meanVelocity2; 
+  std::vector<double> meanEnergy, meanVelocity, meanVelocity2;
+  std::vector<double> meanMomentum;
   const double boltzmann_k = 1.0;
   
 };

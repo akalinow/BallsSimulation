@@ -20,7 +20,7 @@ class Vector3D : public std::vector<double>{
   double z() const { return this->at(2);}
   double mag() const {return std::sqrt(mag2());}
   double mag2() const {return this->at(0)*this->at(0) +
-      this->at(1)*this->at(1) +this->at(2)*this->at(2);}
+      this->at(1)*this->at(1) + this->at(2)*this->at(2);}
   
   Vector3D operator+(const Vector3D& v) const {
     return Vector3D{this->at(0)+v.at(0),

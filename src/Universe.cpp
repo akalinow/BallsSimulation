@@ -112,19 +112,20 @@ void Universe::detectCollisions(){
 }
 /////////////////////////////
 /////////////////////////////
-void Universe::printState() const{
-
-   for(auto it: myObjects){
-     std::cout<<it<<std::endl;
-   }  
-}
-/////////////////////////////
-/////////////////////////////
 void Universe::resetCollideFlag(){
 
    for(auto & it: myObjects){
      it.setHasCollided(false);
    }  
+}
+/////////////////////////////
+/////////////////////////////
+std::ostream& operator<<(std::ostream& os, const Universe& aUniverse){
+
+  for(auto it: aUniverse.getObjects()){
+     os<<it<<std::endl;
+   }
+  return os;
 }
 /////////////////////////////
 /////////////////////////////

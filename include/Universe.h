@@ -1,6 +1,7 @@
 #ifndef UNIVERSE__H
 #define UNIVERSE__H
 
+#include <ostream>
 #include <map>
 
 #include "Object.h"
@@ -26,8 +27,6 @@ class Universe{
 
   const objectContainer & getObjects() const {return myObjects;}
 
-  void printState() const;
-
  private:
 
   Vector3D getForce(double mass, Vector3D position) const;
@@ -44,4 +43,6 @@ class Universe{
   objectContainer myObjects;
   
 };
+
+std::ostream& operator<<(std::ostream& os, const Universe& aUniverse);
 #endif

@@ -35,8 +35,8 @@ int  main(int argc, char *argv[]){
   for(unsigned int iStep=0;iStep<nSteps;++iStep){
     if(doFrames=="true") myPlotter.plotBalls2D(myUniverse.getObjects(), iStep);	
     if(iStep%100==0){
-      std::cout<<iStep<<std::endl;
-      //myUniverse.printState();
+      std::cout<<iStep<<std::endl<<myUniverse;
+      
     }
     myPlotter.accumulate(myUniverse.getObjects(), iStep);
     myUniverse.advanceTime();	
