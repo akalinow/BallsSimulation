@@ -8,7 +8,7 @@ set( CMAKE_VERBOSE_MAKEFILE off)
 set(CMAKE_INSTALL_PREFIX "$ENV{PWD}") # install in the current directory
 MESSAGE( STATUS "CMAKE_INSTALL_PREFIX:         " ${CMAKE_INSTALL_PREFIX} )
 
-set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++14 -DWITHOUT_NUMPY -I/usr/include/python2.7/ -lpython2.7")
+set(CMAKE_CXX_FLAGS "-Wall -O3 -std=c++17 -I/usr/include/python3.7m/ -lpython3.7m")
 
 #Set RPATH to install dir, so user do not have to set the LD_LIBRARY_PATH
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
@@ -44,3 +44,4 @@ target_link_libraries(mySimulation PUBLIC ${MODULE_NAME})
 # relative to the executable.
 install(TARGETS ${MODULE_NAME} LIBRARY DESTINATION lib)
 install(TARGETS mySimulation RUNTIME DESTINATION bin)
+install(DIRECTORY DESTINATION fig_png)

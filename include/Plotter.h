@@ -7,7 +7,7 @@ class Plotter{
 
  public:
 
-  Plotter() = default;
+  Plotter();
   ~Plotter() {};
 
   void plotBalls2D(const Universe::objectContainer & aContainer, unsigned int timeStep) const;
@@ -22,6 +22,7 @@ class Plotter{
 
   double getTemperature(double energy) const;
 
+  std::string plotsDirectory = "fig_png/";
   std::vector<double> meanEnergy, meanVelocity, meanVelocity2;
   std::vector<double> meanMomentum;
   const double boltzmann_k = 1.0;

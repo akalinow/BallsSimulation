@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <map>
+#include <random>
 
 #include "Object.h"
 
@@ -35,12 +36,15 @@ class Universe{
   void detectCollisionsWithWalls();
   void detectCollisionsWithBalls();
   void resetCollideFlag();
+  Object drawBallInWall(double t, Object & aObj, unsigned int iCoordinate);
   void bounceFromWall(Object & aObj, unsigned int iCoordinate);
   void bounceFromBall(Object & aObj1, Object & aObj2);
 
   double myTimeStep = 0;
   long int myClock = 0;
   objectContainer myObjects;
+
+  std::default_random_engine generator;
   
 };
 

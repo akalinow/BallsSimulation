@@ -29,10 +29,12 @@ int  main(int argc, char *argv[]){
     myUniverse.addObject(aObj);
   }  
 
-
   Plotter myPlotter;
   std::cout<<"Time step \t Position:\tSpeed:"<<std::endl;
   for(unsigned int iStep=0;iStep<nSteps;++iStep){
+    if(iStep%10000==0){
+      std::cout<<iStep<<std::endl;//<<myUniverse;
+    }    
     if(doFrames=="true") myPlotter.plotBalls2D(myUniverse.getObjects(), iStep);	
     if(iStep%100==0){
       std::cout<<iStep<<std::endl<<myUniverse;
@@ -42,6 +44,8 @@ int  main(int argc, char *argv[]){
     myUniverse.advanceTime();	
   }
 
+  myPlotter.plotBalls2D(myUniverse.getObjects(),nSteps);
+  myPlotter.accumulate(myUniverse.getObjects(),nSteps);
   if(doFrames=="true") myPlotter.makeAnimation();
   myPlotter.plotAccumulated();
   return 0;  
